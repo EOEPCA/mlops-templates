@@ -1,0 +1,7 @@
+[core]
+    remote = sharinghub
+
+['remote "sharinghub"']
+    url = {{ cookiecutter.__dvc_remote_url }}
+    auth = custom
+    custom_auth_header = X-Gitlab-Token

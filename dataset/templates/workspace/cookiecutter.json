@@ -1,0 +1,21 @@
+{
+    "dataset_name": "",
+    "dataset_slug": "{{ cookiecutter.dataset_name|lower|replace(' ', '-')|replace('_', '-') }}-dataset",
+    "dataset_description": "My dataset {{ cookiecutter.dataset_name }}",
+    "workspace_user": "bob",
+    "workspace_bucket": "ws-{{ cookiecutter.workspace_user }}",
+    "dvc_remote_url": "s3://{{ cookiecutter.workspace_bucket }}/{{ cookiecutter.dataset_slug }}",
+    "dvc_remote_endpointurl": "https://minio.example.com",
+    "git_commit": "Initial commit",
+    "__dvc_remote_endpointurl": "{{ cookiecutter.dvc_remote_endpointurl.removesuffix('/') }}",
+    "__prompts__": {
+        "dataset_name": "Dataset name",
+        "dataset_slug": "Dataset slug, lower-case and hyphen-style",
+        "dataset_description": "Dataset single-line description",
+        "workspace_user": "Workspace username",
+        "workspace_bucket": "Workspace bucket name",
+        "dvc_remote_url": "DVC remote URL",
+        "dvc_remote_endpointurl": "DVC remote endpoint URL",
+        "git_commit": "First Git commit message"
+    }
+}

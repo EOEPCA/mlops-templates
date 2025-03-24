@@ -1,0 +1,19 @@
+{
+    "dataset_name": "",
+    "dataset_slug": "{{ cookiecutter.dataset_name|lower|replace(' ', '-')|replace('_', '-') }}-dataset",
+    "dataset_description": "My dataset {{ cookiecutter.dataset_name }}",
+    "s3_bucket": "mybucket",
+    "s3_endpoint": "https://minio.example.com",
+    "s3_url": "s3://{{ cookiecutter.s3_bucket }}/{{ cookiecutter.dataset_slug }}",
+    "git_commit": "Initial commit",
+    "__s3_endpoint": "{{ cookiecutter.s3_endpoint.removesuffix('/') }}",
+    "__prompts__": {
+        "dataset_name": "Dataset name",
+        "dataset_slug": "Dataset slug, lower-case and hyphen-style",
+        "dataset_description": "Dataset single-line description",
+        "s3_bucket": "S3 bucket name",
+        "s3_endpoint": "S3 endpoint URL",
+        "s3_url": "S3 URL",
+        "git_commit": "First Git commit message"
+    }
+}

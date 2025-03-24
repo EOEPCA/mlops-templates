@@ -1,0 +1,6 @@
+[core]
+    remote = workspace
+
+['remote "workspace"']
+    url = {{ cookiecutter.dvc_remote_url }}
+    endpointurl = {{ cookiecutter.__dvc_remote_endpointurl }}
