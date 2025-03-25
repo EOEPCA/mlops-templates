@@ -1,0 +1,19 @@
+{
+    "project_name": "",
+    "project_slug": "{{ cookiecutter.project_name|lower|replace(' ', '-')|replace('_', '-') }}",
+    "project_description": "My project {{ cookiecutter.project_name }}",
+    "git_commit": "Initial commit",
+    "gitlab_project_path": "",
+    "__gitlab_project_path": "{{ cookiecutter.gitlab_project_path.removeprefix('/').removesuffix('/') }}",
+    "sharinghub_url": "",
+    "__sharinghub_url": "{{ cookiecutter.sharinghub_url.removesuffix('/') }}",
+    "mlflow_tracking_uri": "{% if cookiecutter.__gitlab_project_path and cookiecutter.__sharinghub_url %}{{ cookiecutter.__sharinghub_url }}/mlflow/{{ cookiecutter.__gitlab_project_path }}/tracking{% endif %}",
+    "gitlab_project_id": "1234",
+    "__prompts__": {
+        "project_name": "Project Name",
+        "project_slug": "?",
+        "project_description": "Project single-line description",
+        "gitlab_project_id": "Gitlab Project ID",
+        "git_commit": "First Git commit message"
+    }
+}
