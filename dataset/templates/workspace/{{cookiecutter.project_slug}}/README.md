@@ -1,4 +1,4 @@
-# {{ cookiecutter.dataset_name }}
+# {{ cookiecutter.dataset_name }} Dataset
 
 {{ cookiecutter.dataset_description }}
 
@@ -19,6 +19,6 @@ pip install -r requirements.txt
 Configure your authentication (will be only stored locally):
 
 ```bash
-dvc remote modify --local s3 access_key_id '<access-key-id>'
-dvc remote modify --local s3 secret_access_key '<secret-access-key>'
+dvc remote modify --local workspace access_key_id '<access-key-id>'
+dvc remote modify --local workspace secret_access_key '<secret-access-key>'
 ```

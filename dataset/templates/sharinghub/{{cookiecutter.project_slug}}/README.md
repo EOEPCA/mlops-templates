@@ -1,4 +1,4 @@
-# {{ cookiecutter.dataset_name }}
+# {{ cookiecutter.dataset_name }} Dataset
 
 {{ cookiecutter.dataset_description }}
 

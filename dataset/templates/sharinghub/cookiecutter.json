@@ -1,15 +1,15 @@
 {
-    "dataset_name": "",
-    "dataset_slug": "{{ cookiecutter.dataset_name|lower|replace(' ', '-')|replace('_', '-') }}-dataset",
+    "dataset_name": "Test",
     "dataset_description": "My dataset {{ cookiecutter.dataset_name }}",
+    "project_slug": "{{ cookiecutter.dataset_name|lower|replace(' ', '-')|replace('_', '-') }}-dataset",
     "sharinghub_url": "https://sharinghub.example.com",
     "gitlab_project_id": "1",
     "git_commit": "Initial commit",
     "__dvc_remote_url": "{{ cookiecutter.sharinghub_url.removesuffix('/') }}/api/store/{{ cookiecutter.gitlab_project_id }}",
     "__prompts__": {
         "dataset_name": "Dataset name",
-        "dataset_slug": "Dataset slug, lower-case and hyphen-style",
         "dataset_description": "Dataset single-line description",
+        "project_slug": "Dataset project slug, lower-case and hyphen-style",
         "sharinghub_url": "SharingHub URL",
         "gitlab_project_id": "GitLab project ID",
         "git_commit": "First Git commit message"

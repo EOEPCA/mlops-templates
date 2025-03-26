@@ -1,1 +1,3 @@
-{{ cookiecutter.project_description }}
+# {{ cookiecutter.model_name }} Model
+
+{{ cookiecutter.model_description }}

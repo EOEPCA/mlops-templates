@@ -5,4 +5,4 @@ subprocess.call(["git", "init", "."])
 subprocess.call(["git", "add", "."])
 subprocess.call(["git", "commit", "-m", "{{ cookiecutter.git_commit }}"])
 
-print("Generated ML model '{{ cookiecutter.project_name }}' (PyTorch)")
+print("Generated ML model '{{ cookiecutter.model_name }}' (PyTorch)")
