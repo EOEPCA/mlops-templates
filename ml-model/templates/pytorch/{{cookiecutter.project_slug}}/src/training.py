@@ -8,7 +8,6 @@ import mlflow
 import onnx
 import torch
 from datasets import load_dataset
-from model import SimpleCNN
 
 
 class TrainingSession:
@@ -43,7 +42,7 @@ class TrainingSession:
         )
 
         self.train_iter = iter(self.train_loader)
-        self.model = SimpleCNN()  # TODO: Add your model here.
+        self.model = None  # TODO: Add your model here.
         self.criterion = None  # TODO: Set your criterion.
         self.optimizer = None  # TODO: Set your optimizer.
         self.scheduler = None  # TODO: Set your scheduler.
