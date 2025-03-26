@@ -1,11 +1,14 @@
-import os
-import mlflow
 import argparse
-from datasets import load_dataset
+import time
+import uuid
+from pathlib import Path
+from typing import Any
 
-import torch
-from model import SimpleCNN
+import mlflow
 import onnx
+import torch
+from datasets import load_dataset
+from model import SimpleCNN
 
 
 class TrainingSession:
@@ -16,12 +19,10 @@ class TrainingSession:
     valid_loader: torch.utils.data.DataLoader
     valid_iter: iter
 
-    metrics = {}  # For each epochs add your metrics here
-    model_informations: {}
-
     def __init__(
         self, epochs=10, batch_size=32, lr=0.001, save_dir="checkpoints", device="cuda"
     ):
+        self.model_information = {}
         self.epochs = epochs
         self.batch_size = batch_size
         self.lr = lr
@@ -71,10 +72,29 @@ class TrainingSession:
                 running_loss += loss.item()
 
             print(
-                f"Epoch [{epoch+1}/{self.epochs}], Loss: {running_loss/len(self.train_loader):.4f}"
+                f"Epoch [{epoch + 1}/{self.epochs}], Loss: {running_loss / len(self.train_loader):.4f}"
             )
 
             # TODO: Add validation here.
+            # If you are satisfied with the metrics you can then save the model with `save_model`.
+
+        # After training on multiple epochs you can inspect self.model_information to decide the one that
+        # produced the best results and call `export_model_mlflow`.
+
+    def save_model(self, metrics: dict[str, Any]) -> None:
+        """At the end of each epoch, if the metrics indicate that the model's performance
+        has improved compared to the previous epoch, the model is saved in ONNX format in self.save_dir.
+        """
+        save_path = Path(
+            self.save_dir,
+            f"model_{str(uuid.uuid4())[:8]}_{int(time.time())}.onnx",
+        )
+        input_tensor = (
+            None  # TODO: Add your input example (ex: torch.randn(4, 2, 256, 256)).
+        )
+        torch.onnx.export(self.model, input_tensor, save_path)
+        self.model_information[save_path] = metrics
+        print(f"Model saved at {save_path}.")
 
     def export_model_mlflow(self, model_path: str) -> None:
         """Once the training session is finished this method will be called
@@ -90,26 +110,6 @@ class TrainingSession:
             input_example=None,  # TODO: Add your input example (ex: torch.randn(4, 2, 256, 256)).
         )
         print("model saved in MLflow.")
-
-    def save_model(self):
-        """At the end of each epoch, if the metrics indicate that the model's performance
-        has improved compared to the previous epoch, the model is saved in ONNX format in self.save_dir.
-        """
-        save_path = os.path.join(
-            self.save_dir,
-            "model_epoch_X.onnx",  # TODO: Add informations about this model state (metrics, epoch, etc ...).
-        )
-        input_tensor = (
-            None  # TODO: Add your input example (ex: torch.randn(4, 2, 256, 256)).
-        )
-
-        torch.onnx.export(self.model, input_tensor, save_path)
-        print("Model saved at", save_path, ".")
-
-        self.model_informations[save_path] = (
-            self.metrics
-        )  # for each epochs we save model save_path & metric for the current epoch
-        # So we can retrieve easily the best model and post it in mlfow.
 
 
 if __name__ == "__main__":
