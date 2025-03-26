@@ -1,8 +1,17 @@
+import argparse
+import sys
+
 import mlflow
+import onnxruntime as ort
 
 
 class MLflowONNXInference:
-    def __init__(self, tracking_uri: str, model_name: str, model_version: str = None):
+    def __init__(
+        self,
+        model_path: str | None = None,
+        model_uri: str | None = None,
+        tracking_uri: str | None = None,
+    ):
         """
         Initialize MLflow ONNX inference pipeline.
         :param tracking_uri: URI of the MLflow tracking server.
@@ -10,25 +19,25 @@ class MLflowONNXInference:
         :param model_version: Specific version of the model to load (optional).
         """
         self.tracking_uri = tracking_uri
-        self.model_name = model_name
-        self.model_version = model_version
+        self.model_uri = model_uri
+        self.model_path = model_path
         self.model = None
 
     def load_model(self) -> None:
         """
         Load the ONNX model from the MLflow tracking server.
         """
-        try:
-            mlflow.set_tracking_uri(self.tracking_uri)
-            if self.model_version:
-                model_uri = f"models:/{self.model_name}/{self.model_version}"
-            else:
-                model_uri = f"models:/{self.model_name}/latest"
-
-            self.model = mlflow.pyfunc.load_model(model_uri)
-            print(f"Model loaded successfully from {model_uri}")
-        except Exception as e:
-            raise RuntimeError(f"Failed to load the model: {e}")
+        if self.model_path:
+            self.model = ort.InferenceSession(self.model_path)
+        elif self.model_uri:
+            try:
+                mlflow.set_tracking_uri(self.tracking_uri)
+                self.model = mlflow.pyfunc.load_model(self.model_uri)
+                print(f"Model loaded successfully from {self.model_uri}")
+            except Exception as e:
+                raise RuntimeError(f"Failed to load the model: {e}")
+        else:
+            raise ValueError(f"{self.model_path} and {self.model_uri} are both None.")
 
     def preprocess(self, raw_data):
         """
@@ -76,14 +85,29 @@ class MLflowONNXInference:
 
 # Example usage:
 if __name__ == "__main__":
-    # Configuration
-    tracking_uri = "{{cookiecutter.mlflow_tracking_uri}}"
-    model_name = (
-        "your-model-name"  # TODO: Replace with your registered model name in MLflow
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-p",
+        "--model-path",
+        help="Path to the model if it's stored locally.",
     )
-    model_version = "1"  # Optional: Specify model version, or None for latest version
+    parser.add_argument("-u", "--model-uri", help="Mlflow model URI.")
+    args = parser.parse_args()
 
-    inference_pipeline = MLflowONNXInference(tracking_uri, model_name, model_version)
+    # Configuration
+    model_path = args.model_path
+    model_uri = args.model_uri
+    tracking_uri = "{{cookiecutter.mlflow_tracking_uri}}"
+
+    if model_path:  # If the model is already stored locally, usefull for Docker usage.
+        inference_pipeline = MLflowONNXInference(model_path=model_path)
+    elif model_uri:
+        inference_pipeline = MLflowONNXInference(
+            model_uri=model_uri, tracking_uri=tracking_uri
+        )
+    else:
+        print("ERROR: one of the options --model-path or --model-uri are required.")
+        sys.exit(-1)
 
     # Load the model
     inference_pipeline.load_model()

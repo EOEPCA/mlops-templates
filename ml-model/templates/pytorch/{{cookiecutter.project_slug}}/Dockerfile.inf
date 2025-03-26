@@ -13,6 +13,6 @@ ARG ONNX_PATH
 COPY ${ONNX_PATH} /app/model.onnx
 COPY src/inference.py /app/inference.py
 
-ENTRYPOINT ["python3", "/app/inference.py", "/app/model.onnx"]
+ENTRYPOINT ["python3", "/app/inference.py", "--model-path", "/app/model.onnx"]
 
 CMD []

@@ -1,3 +1,5 @@
-# {{ cookiecutter.model_name }} Model
+# {{ cookiecutter.project_description }}
 
-{{ cookiecutter.model_description }}
+## Setup environnment
+
+Setup your Mlflow credentials: `export MLFLOW_TRACKING_TOKEN=` & `export LOGNAME=`
