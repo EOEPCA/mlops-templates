@@ -1,12 +1,16 @@
+"""Module compatible with `load_dataset` method from `datasets` library."""
+
 import datasets
 from dvc.api import DVCFileSystem
 
+_DESCRIPTION = "{{ cookiecutter.dataset_description }}"
 
-class CustomBuilderConfig(datasets.BuilderConfig):
+
+class DatasetBuilderConfig(datasets.BuilderConfig):
     """
-    This class is used to transfer configurations variables (such as 'no_cache'
-    option and 'context' path) to the class Sen1floods11Dataset in self config
-    field.
+    This class is used to transfer configurations variables
+    (such as 'no_cache' option and 'context' path) in Dataset
+    self.config field.
     """
 
     def __init__(self, version="1.0.0", description=None, **kwargs):
@@ -16,18 +20,27 @@ class CustomBuilderConfig(datasets.BuilderConfig):
         self.context = config["context"]
 
 
-class MyCustomDataset(datasets.GeneratorBasedBuilder):
+class Dataset(datasets.GeneratorBasedBuilder):
+    """Custom dataset class for loading/preprocessing the {{ cookiecutter.dataset_name }} dataset.
+
+    This class uses the Hugging Face `datasets` library to handle data
+    generation and implements specific logic to load, process, and stream the
+    dataset efficiently.
+    """
+
+    BUILDER_CONFIG_CLASS = DatasetBuilderConfig
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.fs = DVCFileSystem(
-            self.config.context
-        )  # Note: It is possible to dl a file with self.fs.read_bytes(path_to_file)
+        # Note: It is possible to download a file from DVC with
+        # self.fs.read_bytes(repo_relative_path_to_file)
+        self.fs = DVCFileSystem(self.config.context)
 
     def _info(self):
         """Contains informations and typings for the dataset."""
         return datasets.DatasetInfo(
-            description="A custom dataset",  # TODO: add description
-            features=datasets.Features(
+            description=_DESCRIPTION,
+            features=datasets.Features(  # TODO: Define your own features for your dataset.
                 {
                     "id": datasets.Value("int32"),
                     "text": datasets.Value("string"),
@@ -35,26 +48,34 @@ class MyCustomDataset(datasets.GeneratorBasedBuilder):
                         names=["negative", "neutral", "positive"]
                     ),
                 }
-            ),  # TODO: Define your own features of your custom dataset.
+            ),
         )
 
     def _split_generators(self, dl_manager):
         """Downloads the data and defines train/test splits."""
+        # TODO: Add the path for each the specified split (can be a .csv, .parquet, etc ...)
+        # The path to the specified split will be stored in an argument that will be passed to
+        # _generate_examples method to load the split. EXAMPLE: {"file_path": "path_to_file.csv"}
+        # Note: "file_path" is the argument name. You can use a different one if you want.
+        # Just make sure that _generate_examples method get back the right argument.
         return [
             datasets.SplitGenerator(
-                name=datasets.Split.TRAIN, gen_kwargs={}
-            ),  # Add the path to the specified split (can be a .csv, .parquet, etc ...)
+                name=datasets.Split.TRAIN,
+                gen_kwargs={},
+            ),
             datasets.SplitGenerator(
-                name=datasets.Split.VALIDATION, gen_kwargs={}
-            ),  # The path to the specified split will be stored to a argument that will be passed to
-            # _generate_examples method to load the split. EXAMPLE: {"file_path": "path_to_file.csv"}
-            datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={}),
-            # Note: "file_path" is the argument name. You can use a different one if you want.
-            # Just make sure that _generate_examples method get back the right argument.
+                name=datasets.Split.VALIDATION,
+                gen_kwargs={},
+            ),
+            datasets.SplitGenerator(
+                name=datasets.Split.TEST,
+                gen_kwargs={},
+            ),
         ]
 
-    def _generate_examples(self, **kwargs) -> I:
+    def _generate_examples(self, **kwargs):
         """Reads the dataset and yields examples.
+
         This method is called each time we are iterating in the dataset,
         returns the downloaded images.
         """
