@@ -1,0 +1,6 @@
+FROM tensorflow/tensorflow
+
+RUN pip install --no-cache-dir \
+    mlflow \
+    datasets \
+    tensorflow-datasets

@@ -1,0 +1,11 @@
+# Byte-compiled
+__pycache__
+
+# virtualenv
+/*venv*
+
+# Caches
+/.*_cache
+
+# Datasets
+/datasets

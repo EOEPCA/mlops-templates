@@ -1,0 +1,18 @@
+FROM python:3.10-slim
+
+COPY requirements-inf.txt /app/requirements-inf.txt
+
+RUN apt-get update && \
+    apt-get install -y libexpat1 && \
+    pip install --no-cache-dir -r /app/requirements-inf.txt && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+ARG ONNX_PATH
+COPY ${ONNX_PATH} /app/model.onnx
+COPY src/inference.py /app/inference.py
+
+ENTRYPOINT ["python3", "/app/inference.py", "--model-path", "/app/model.onnx"]
+
+CMD []

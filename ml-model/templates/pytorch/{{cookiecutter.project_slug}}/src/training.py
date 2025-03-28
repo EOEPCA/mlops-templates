@@ -15,9 +15,6 @@ class TrainingSession:
     train_loader: torch.utils.data.Dataloader
     train_iter: iter
 
-    valid_loader: torch.utils.data.DataLoader
-    valid_iter: iter
-
     def __init__(
         self, epochs=10, batch_size=32, lr=0.001, save_dir="checkpoints", device="cuda"
     ):
@@ -128,9 +125,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     mlflow.set_tracking_uri("{{cookiecutter.mlflow_tracking_uri}}")
-    mlflow.set_experiment(
-        "example ({{cookiecutter.gitlab_project_id}})"
-    )  # TODO: set your experiment.
+    mlflow.set_experiment("example ({{cookiecutter.gitlab_project_id}})")
 
     with mlflow.start_run():
         training_session = TrainingSession(
