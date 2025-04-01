@@ -4,16 +4,17 @@
     "project_slug": "{{ cookiecutter.model_name|lower|replace(' ', '-')|replace('_', '-') }}-model",
     "gitlab_project_path": "",
     "__gitlab_project_path": "{{ cookiecutter.gitlab_project_path.removeprefix('/').removesuffix('/') }}",
+    "gitlab_project_id": "1234",
     "sharinghub_url": "",
     "__sharinghub_url": "{{ cookiecutter.sharinghub_url.removesuffix('/') }}",
     "mlflow_tracking_uri": "{% if cookiecutter.__gitlab_project_path and cookiecutter.__sharinghub_url %}{{ cookiecutter.__sharinghub_url }}/mlflow/{{ cookiecutter.__gitlab_project_path }}/tracking{% endif %}",
-    "gitlab_project_id": "1234",
     "git_commit": "Initial commit",
     "__prompts__": {
         "model_name": "Model Name",
         "model_description": "Model single-line description",
         "project_slug": "Model project slug, lower-case and hyphen-style",
         "gitlab_project_path": "Gitlab Project path",
+        "gitlab_project_id": "GitLab project ID",
         "sharinghub_url": "SharingHub URL",
         "mlflow_tracking_uri": "MLflow tracking URI",
         "git_commit": "First Git commit message"
